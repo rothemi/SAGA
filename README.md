@@ -28,7 +28,7 @@ vignette("saga_vignette")
 or the individual help files for each function.
 help(package = "saga", help_type = "html")
 
-There is also a full example in the Vignette. Example files are provided in the "sample files.zip" file.
+There is also a full example in the Vignette. 
 
 
 
