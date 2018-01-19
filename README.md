@@ -8,7 +8,7 @@ established. Then the required packages can be loaded independently. Please
 note that these packages are only available over Bioconductor and cannot be
 loaded using CRAN.
 
-source("https://bioconductor./biocLite.R")
+source("https://bioconductor/biocLite.R")
 biocLite("Biobase")
 biocLite("BioGenerics")
 biocLite("affy")
