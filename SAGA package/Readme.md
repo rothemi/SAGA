@@ -1,5 +1,5 @@
 # SAGA R package
-The SAGA R package can be found in this folder as a R source file. The package requires also some sample files which can be downloaded here:
+The SAGA R package can be found in this folder as a R source file. The package also requires some sample files which can be downloaded here: PLACEHOLDER
 
 It can be installed using the following command. Make sure to paste your own path to file:
 
