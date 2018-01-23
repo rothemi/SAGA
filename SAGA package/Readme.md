@@ -6,7 +6,7 @@ It can be installed using the following command. Make sure to paste your own pat
 install.packages("path_to_file/saga_0.6.0.tar.gz", repos = NULL, type="source")
 
 There is also a test script in this folder following the general flow of SAGA analysis.
-See the helpf files and the SAGA_Vignette for more information on SAGA functions.
+See the help files and the SAGA_Vignette for more information on SAGA functions.
 
 help(package = "saga", help_type = "html")
 vignette("saga_vignette")
