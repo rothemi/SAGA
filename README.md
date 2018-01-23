@@ -11,7 +11,7 @@ setwd("c:/opy your specific folder in here")
 
 Then the script can be sourced or executed row by row.
 
-The uploaded PCA Plot shows the expected result for the sample files.
+The uploaded PCA plot shows the expected result for the sample files.
 
 
 
