@@ -9,9 +9,9 @@ Before using SAGA, the user needs to specify this folder in R by the following c
 
 setwd("c:/opy your specific folder in here")
 
-Then the script can be sourced or executed row by row.
+Then the script can be sourced or executed row by row. By following this instruction the provided sample files will be analysed. Alternatively, the user can provide his own sample files.
 
-The uploaded PCA plot shows the expected result for the sample files.
+The uploaded PCA plot shows the expected result for the provided sample files.
 
 
 
