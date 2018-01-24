@@ -1,0 +1,26 @@
+Confusion Matrix and Statistics
+
+                Reference
+Prediction       transforming untransforming
+  transforming            169              1
+  untransforming            1            169
+                                          
+               Accuracy : 0.9941          
+                 95% CI : (0.9789, 0.9993)
+    No Information Rate : 0.5             
+    P-Value [Acc > NIR] : <2e-16          
+                                          
+                  Kappa : 0.9882          
+ Mcnemar's Test P-Value : 1               
+                                          
+            Sensitivity : 0.9941          
+            Specificity : 0.9941          
+         Pos Pred Value : 0.9941          
+         Neg Pred Value : 0.9941          
+             Prevalence : 0.5000          
+         Detection Rate : 0.4971          
+   Detection Prevalence : 0.5000          
+      Balanced Accuracy : 0.9941          
+                                          
+       'Positive' Class : transforming    
+                                          
