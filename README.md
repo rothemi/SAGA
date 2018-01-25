@@ -17,6 +17,6 @@ Now, the script can be sourced or executed row by row. By following this instruc
 
 (Important: the Sampleinformation.txt must be adapted in that case!).
 
-A detailed description of all functions used in the R-script, instructions for creating a SampleInformation file and how to interpret the SAGA results can be found in the [SAGA_Vignette](./SAGA_Vignette.pdf).
+A detailed description of all functions used in the R-script, instructions for creating a SampleInformation file and how to interpret the SAGA results can be found in the [SAGA_Vignette](./saga_vignette.pdf).
 
 Here, the [SAGA results](./SAGA_test_files_Results) for the provided test files can be found.
