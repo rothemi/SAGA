@@ -1,1 +1,237 @@
-Placeholder
+# Expression set analysis
+Below we describe the various steps included in the main analysis script [R_SAGA_FinalDataSet_GSEA_169.R](./ R_SAGA_FinalDataSet_GSEA_169.R).
+## Microarray data processing
+The data was analyzed using R 3.5.1 and Bioconductor 3.735. Raw files were read in separately for each array design with the function “read.maimages” from the R package “limma” 37. A merged dataset was created by extracting all probes derived from the original Agilent Mouse Genome Oligo Microarray 4x44K v2 array (A_XX_PXXXXXX) from the four array platforms and combining them using the function “cbind.EList” from “limma”. The probe with the ID “A_55_P2337033“ interrogating the gene “2310065F04Rik” was excluded from the dataset since it strongly cross-reacted with the sequence of EGFP. Array quality was assessed by interrogation of the probe intensity distributions and by principal component analysis of log2-transformed unprocessed data. At this point one complete SAGA assay and two outlier arrays were excluded from further analysis due to low overall signal strength. The Raw data was log2-transformed and quantile-normalized using the ”limma” package. The success of preprocessing was verified by inspection of the probe intensity distributions before and after preprocessing (Supplementary Fig 1a,b). The four within-array replicates of each probe were collapsed using the “avereps” function from the R package “limma” resulting in a dataset with 39428 unique probes. Probes interrogating the same gene were not collapsed any further, since most genes were only interrogated by one probe on this platform. In the quantile-normalized data, a substantial batch effect between different SAGA assays was observed (Supplementary Fig 1c). Batch correction between different SAGA assays was performed on quantile-normalized log2-values, by using the parametric ComBat algorithm as implemented in the R package “sva”38 (Supplementary Fig 1d,e) with the SAGA number as batch variable and all other parameters set to default. 
+## t-SNE and PCA visualizations
+Two-dimensional representation of gene expression profiles was visualized by t-distributed stochastic neighbor embedding (t-SNE)19. t-SNE performs dimensionality reduction by nonlinear modeling of the sample to sample distances in the original feature space in a lower dimensional space with the aim to visualize both global and local relationships between the samples. For all t-SNE representations we used the Barnes-Hut implementation of t-SNE from the “Rtsne”-package39 without prior dimension reduction. For each t-SNE plot Barnes-Hut t-SNE was run 1000 times with different random seeds and the iteration with the lowest Kullback-Leibler divergence was selected for visualization as 2D plot. For t-SNE visualizations of the whole dataset (Figure 2e, Supplementary Fig. 1c-e), all 39,428 probes were used and the perplexity was set to 16, since this exceeded the average number of samples within each cluster/SAGA assay and is within the range of 5-50 proposed by the authors of t-SNE19. For the t-SNE plots in Figure 2a, 2c and Supplementary Fig. 2a 36,226 annotated probes were used and the perplexity was set to 2, which was the maximum value allowed for this sample size. The “prcomp” function from the R package “stats” was used to perform principal component analysis. For heatmaps we used the function “heatmap.2” from the R package “gplots” on the number of probes indicated in the figure legend. Heatmaps were row-scaled with the color key indicated below the heatmap. Variance-based filtering of probes for unsupervised analysis was performed using the interquartile range (IQR) function in the package “genefilter” resulting in the number of probes indicated in the figure legend. 
+## Differential expression analysis
+Differentially expressed probes between the subgroups were computed using the moderated t-test of the ”limma” package37 with Benjamini-Hochberg multiple testing correction. We computed the Toplists (differentially expressed genes) for the following contrasts: ”transforming – mock” (Supplementary Table 2c_TvM) , “safe – mock” (Supplementary Table 2d_SvM), “transforming – safe” (Supplementary Table 2e_TvS) and “transforming – (mock+safe)/2”  (Supplementary Table 2a_TvM+S) for 152 SAGA samples with known IVIM properties (65 transforming, 32 mock and 55 safe). 
+## Gene set enrichment analysis (GSEA)
+The quantile normalized and batch corrected SAGA expression matrix (36,226 annotated probes, 152 samples with known IVIM properties (transforming, mock and non-transforming (”safe”)) was first filtered for gene symbols that appear at least once in the interrogated MSigDB.v6.2 (C2, C3, C5, C6, hallmark) gene set collections. In cases with multiple probes per gene the probe with the highest standard deviation across the samples was selected, resulting in a gene expression matrix consisting of 15,376 probes/rows interrogating 15,376 unique genes. From this matrix .gct files were generated containing all 65 transforming and 32 mock samples (contrast “transforming vs mock”), 65 transforming and 55 safe samples (contrast “transforming vs safe”), 55 safe and 32 mock samples (contrast “safe vs mock”), 65 transforming, 32 mock and 55 safe samples (contrast “transforming vs mock and safe”).  For samples from day 4, cultures LTR.SF.EGFP (n=4) and one mock sample were used (contrast “transforming vs mock day 4”, Supplementary Fig. 2c).  For the comparison of day 8 and day 15, samples (Supplementary Table 7) were preprocessed together with all 169 SAGA samples and treated as separated batch in COMBAT. For the GSEA contrast “d8 mock vs d15 mock”, the two mock samples from day 8 were compared to 32 mock samples from day 15. The .gct files were used as input for the Broad GSEA software22 together with a .chip file containing the annotation for the 15,376 probes. GSEA was performed with ranking the probes according to signal to noise ratio and the permutation type set to “gene_set” (10,000 permutations). First, we used 105 custom gene sets related to hematopoiesis and leukemia (Supplementary Table 3)36. In addition, 8286 gene sets were tested for enrichment from MSigDB.v6.2 (C2, C5, hallmark gene sets). The enrichment results were visualized by plotting the normalized enrichment score (NES) against the FDR (Figure 2e-g). For visualization purposes, gene sets with a nominal FDR of zero were assigned a log10 FDR between -5 and -6 in Figure 2 e-g and Supplementary Fig. 2d. Supplementary Table 3 contains all exact results of GSEA computations. Competitive gene set tests using permutation of genes assume statistical independence of genes in the gene sets, which is in most cases unrealistic. It has been shown that inter-gene correlation can lead to falsely significant P-values41 in these tests. In contrast, permutation of the sample labels preserves inter-gene correlation, but needs a substantial number of samples in each group, suffers from low statistical power and inevitably alters the hypothesis being tested. We therefore additionally performed GSEA with ROAST (rotation gene set tests for complex microarray experiments42) and CAMERA (competitive gene set test accounting for inter-gene correlation, 43) from the limma package by applying both functions to the matrix of 15,376 probes and computing the same contrasts as with the Broad GSEA tool. The parameters for ROAST were set to 50,000 rotations and set.statisticset.statistic="mean" (default value). For CAMERA the inter.gene.cor parameter was set to 0.01, as proposed by the authors43. CAMERA and ROAST allow for non-independence of genes by estimating the inter-gene correlation (CAMERA) or using rotation of residuals to generate a valid null distribution (ROAST)42. Importantly, both methods test different null hypotheses: whereas CAMERA is a competitive test that interrogates whether genes within the gene set of interest are significantly more often differentially expressed compared to genes outside of the gene set, ROAST is a self-contained test that tests whether a defined proportion of genes within the gene set is differentially expressed at all. However, while both methods have been shown to control the FDR correctly compared to methods based on gene permutation42,43, they do not report a normalized enrichment score or a similar measure, making it difficult to assess how strong the gene set is enriched at the top or bottom of the ranked gene list. This also makes comparisons between different gene sets difficult. We therefore report both the results of GSEA with the intuitive and widely used NES (normalized enrichment score) and the results of CAMERA/ROAST based on a rigorous test statistic. All gene sets labeled in Figure 2 e-g and Supplementary Fig. 2d were found to be significantly enriched (FDR < 0.1) by at least one additional method (ROAST or CAMERA), whereas most of the gene sets were found by both additional methods (Supplementary Table 3). For the enrichment map network shown in Figure 2 m), the output from the GSEA analysis querying 8,286 gene sets from MSigDB.v6.2 was used as input for the Enrichment Map Tool44 for Cytoscape 3.7.1. Gene sets with a nominal FDR < 0.05 were selected for visualization in the network graphs. The color of the nodes encodes normalized enrichment score as shown in the color key. A similarity cutoff of 0.375 (combined Jaccard and overlap) was used.  
+
+## Availability of raw data and R workspace file
+
+The following files can be downloaded [here]():
+*	Expression set analysis.RData
+*	[R_SAGA_FinalDataSet_GSEA_169.R](./ R_SAGA_FinalDataSet_GSEA_169.R).
+*	4467.txt
+*	4469.txt
+*	4471.txt
+*	4473.txt
+*	4907.txt
+*	4908.txt
+*	4909.txt
+*	4990.txt
+*	4991.txt
+*	4992.txt
+*	4993.txt
+*	4994.txt
+*	4995.txt
+*	4996.txt
+*	4997.txt
+*	5094.txt
+*	5095.txt
+*	5096.txt
+*	5097.txt
+*	5098.txt
+*	5099.txt
+*	5118.txt
+*	5119.txt
+*	5120.txt
+*	5265.txt
+*	5268.txt
+*	5271.txt
+*	5399.txt
+*	5400.txt
+*	5401.txt
+*	5402.txt
+*	5403.txt
+*	5404.txt
+*	5405.txt
+*	5406.txt
+*	5407.txt
+*	5408.txt
+*	5409.txt
+*	5410.txt
+*	5468.txt
+*	5469.txt
+*	5470.txt
+*	5471.txt
+*	5472.txt
+*	5473.txt
+*	5474.txt
+*	5475.txt
+*	5476.txt
+*	5477.txt
+*	5478.txt
+*	5479.txt
+*	5602.txt
+*	5603.txt
+*	5604.txt
+*	5605.txt
+*	5606.txt
+*	5607.txt
+*	5608.txt
+*	5609.txt
+*	5610.txt
+*	5611.txt
+*	5612.txt
+*	5613.txt
+*	5614.txt
+*	5615.txt
+*	5616.txt
+*	5617.txt
+*	5741.txt
+*	5742.txt
+*	5743.txt
+*	5744.txt
+*	5745.txt
+*	5746.txt
+*	5747.txt
+*	5748.txt
+*	5841.txt
+*	5842.txt
+*	5843.txt
+*	5844.txt
+*	5845.txt
+*	5846.txt
+*	5847.txt
+*	5848.txt
+*	6011.txt
+*	6012.txt
+*	6013.txt
+*	6014.txt
+*	6015.txt
+*	6016.txt
+*	6017.txt
+*	6018.txt
+*	6198.txt
+*	6199.txt
+*	6200.txt
+*	6202.txt
+*	6203.txt
+*	6204.txt
+*	6206.txt
+*	6207.txt
+*	6208.txt
+*	6212.txt
+*	6244.txt
+*	6245.txt
+*	6246.txt
+*	6247.txt
+*	6248.txt
+*	6249.txt
+*	6250.txt
+*	6251.txt
+*	6252.txt
+*	6253.txt
+*	6254.txt
+*	6255.txt
+*	6256.txt
+*	6257.txt
+*	6358.txt
+*	6359.txt
+*	6360.txt
+*	6361.txt
+*	6362.txt
+*	6363.txt
+*	6364.txt
+*	6365.txt
+*	6366.txt
+*	6367.txt
+*	6368.txt
+*	6369.txt
+*	6374.1.txt
+*	6374.txt
+*	6375.txt
+*	6376.txt
+*	6377.txt
+*	6378.txt
+*	6379.1.txt
+*	6379.txt
+*	6380.txt
+*	6381.txt
+*	6382.txt
+*	6383.txt
+*	6384.txt
+*	6385.txt
+*	6394.txt
+*	6395.txt
+*	6396.txt
+*	6397.txt
+*	6398.txt
+*	6399.txt
+*	6400.txt
+*	6401.txt
+*	6402.txt
+*	6403.txt
+*	6404.txt
+*	6405.txt
+*	6406.txt
+*	6407.txt
+*	6408.txt
+*	6409.txt
+*	6452.txt
+*	6453.txt
+*	6454.txt
+*	6455.txt
+*	6456.txt
+*	6457.txt
+*	6458.txt
+*	6459.txt
+*	6460.txt
+*	6461.txt
+*	6462.txt
+*	6463.txt
+*	Allgenes in C23567AS_20181205.txt
+*	Annotation_GSEA.chip
+*	Annotation_SAGA_FINAL_20181128.txt
+*	Annotation_SAGA_FINAL_KNOWN_20181128.txt
+*	Boxplot_RAW_FullSagaSet169.pdf
+*	Boxplot_RMA_FullSagaSet169.pdf
+*	c2.C5.hm.AML.STEM_v6.2.symbols.txt
+*	CAMERA_SvM_C2C5HMAMLSTEM.txt
+*	CAMERA_SvM_STEM.txt
+*	CAMERA_TvM_C2C5HMAMLSTEM.txt
+*	CAMERA_TvM_STEM.txt
+*	CAMERA_TvS_C2C5HMAMLSTEM.txt
+*	CAMERA_TvS_STEM.txt
+*	CAMERA_TvSM_C2C5HMAMLSTEM.txt
+*	Densities_RAW_FullSagaSet_169.pdf
+*	Densities_RMA_FullSagaSet_169.pdf
+*	ESET_RMA_COMBAT_FullSagaSet167_FINAL.txt
+*	ESET_RMA_COMBAT_FullSagaSet169_FINAL.txt
+*	ESET_RMA_COMBAT_KNOWN_FullSagaSet152_FINAL.txt
+*	ESET_RMA_COMBAT_KNOWN_FullSagaSet167_FINAL.txt
+*	ESET_RMA_FullSagaSet169_FINAL.txt
+*	GSEA/
+*	GSEA_MATRIX_SvM.gct
+*	GSEA_MATRIX_TvM.gct
+*	GSEA_MATRIX_TvS.gct
+*	GSEA_MATRIX_TvSM.gct
+*	pData_Mock.txt
+*	pData_safe.txt
+*	pData_transforming.txt
+*	R_SAGA_FinalDataSet_GSEA_169.R
+*	RAW_FullSagaSet169_averaged_FINAL.txt
+*	RAW_FullSagaSet169_quadruplicates_FINAL.txt
+*	ROAST_SvM_C2C5HMAMLSTEM.txt
+*	ROAST_SvM_STEM.txt
+*	ROAST_TvM_C2C5HMAMLSTEM.txt
+*	ROAST_TvM_STEM.txt
+*	ROAST_TvS_C2C5HMAMLSTEM.txt
+*	ROAST_TvS_STEM.txt
+*	ROAST_TvSM_C2C5HMAMLSTEM.txt
+*	SAGA_INBUILD_Top9_GA.txt
+*	SAGA_Targets_FINAL_152.txt
+*	SAGA_Targets_FINAL_169.txt
+*	SAGA_Targets_FINAL_169.xlsx
+*	StemCellGeneSets_Fig2g_20181205.txt
+*	Toplist_FullSagaSet152_Safe vs Mock_FINAL.txt
+*	Toplist_FullSagaSet152_Transforming vs Mock and Safe_FINAL.txt
+*	Toplist_FullSagaSet152_Transforming vs Mock_FINAL.txt
+*	Toplist_FullSagaSet152_Transforming vs Safe_FINAL.txt
+*	tSNE_ESET.COMBAT167_36226probes_Perpl16_SEED476_over Design.pdf
+*	tSNE_ESET.COMBAT169_39428probes_Perpl16_SEED270.pdf
+*	tSNE_ESET.COMBAT169_39428probes_Perpl16_SEED270_over Design.pdf
+*	tSNE_ESET.RMA_39428probes_Perpl16_SEED520.pdf
