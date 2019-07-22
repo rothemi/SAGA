@@ -1,5 +1,5 @@
 # Left panel of Figure R3
-The script [Performance_Top9GA_23 old TestSamples.R](./Performance_Top9GA_23 old%20TestSamples.R) was used to generate the left panel of [Figure R3](../Performances_TestSets_SAGAold.png).
+The script [Performance_Top9GA_23 old TestSamples.R](./Performance_Top9GA_23%20old%20TestSamples.R) was used to generate the left panel of [Figure R3](../Performances_TestSets_SAGAold.png).
 ## Availability of raw data and R workspace file
 
 The following files can be downloaded [here]( https://owncloud.gwdg.de/index.php/s/X96Qky3BNxdj2Wt):
