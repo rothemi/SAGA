@@ -5,7 +5,7 @@ Since the annotation of microarray probes may change as the annotation of the ge
 ## Availability of raw data and R workspace file
 
 The following files can be downloaded [here](https://owncloud.gwdg.de/index.php/s/83axjKOt1JrviwS):
-*	R.Data
+*	Microarray annotation.RData
 *	Agilent_Annotation_026655_D_AA_20171030_wo.txt
 *	Annotation_Gencode.vM18.txt
 *	Annotation_GencodeM18_3MM_BioMart.R
