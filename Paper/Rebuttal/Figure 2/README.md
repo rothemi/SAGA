@@ -1,6 +1,6 @@
 Figure R2 is the same as Figure 3 d-f.
 
-The main code is described in [Feature Selection](Paper/Feature Selection/20190306_rfe_GA40_152_10TestSets_IQR0.8_FINAL_median.R)
+The main code is described in [Feature Selection](https://github.com/rothemi/SAGA/blob/master/Paper/Feature%20Selection/20190306_rfe_GA40_152_10TestSets_IQR0.8_FINAL_median.R)
 
 Below is the code to generate Figure R2:
 ```
