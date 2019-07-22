@@ -24,7 +24,7 @@ The following files can be downloaded [here]( https://owncloud.gwdg.de/index.php
     *	4907.txt
     *	4908.txt
     *	4909.txt
-    *	'Boxplot_quantile normalized.pdf'
+    *	Boxplot_quantile normalized.pdf
     *	Boxplot_RAW.pdf
     *	ConfusionMatrix_SAGA68_Top9GA_120411.txt
     *	PCA_SAGA_Top9_61samples.pdf
@@ -35,8 +35,8 @@ The following files can be downloaded [here]( https://owncloud.gwdg.de/index.php
     *	SAGA.GSEA_Batch_1.pdf
     *	SampleInformation.txt
     *	TestSet_1_120411.RData
-    *	'tSNE_quantile normalized.pdf'
-    *	'tSNE_quantile normalized_COMBAT.pdf'
+    *	tSNE_quantile normalized.pdf
+    *	tSNE_quantile normalized_COMBAT.pdf
 *	TestSet_2_170125_171102/ 
      *	SAGA_INBUILD
          *	SAGA_Annotation_FINAL_KNOWN_20181128.txt
