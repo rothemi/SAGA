@@ -13,7 +13,7 @@ The quantile normalized and batch corrected SAGA expression matrix (36,226 annot
 
 The following files can be downloaded [here]():
 *	Expression set analysis.RData
-*	[R_SAGA_FinalDataSet_GSEA_169.R](./ R_SAGA_FinalDataSet_GSEA_169.R).
+*	[R_SAGA_FinalDataSet_GSEA_169.R](./ R_SAGA_FinalDataSet_GSEA_169.R)
 *	4467.txt
 *	4469.txt
 *	4471.txt
