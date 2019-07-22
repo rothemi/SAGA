@@ -1,4 +1,4 @@
-Figure R2 is the same as Figure 3 d-f. [link](Paper/Feature Selection/20190306_rfe_GA40_152_10TestSets_IQR0.8_FINAL_median.R)
+Figure R2 is the same as Figure 3 d-f. [link](Paper/Feature Selection)
 
 The main code is described in [Feature Selection] (Paper/Feature Selection/20190306_rfe_GA40_152_10TestSets_IQR0.8_FINAL_median.R)
 
