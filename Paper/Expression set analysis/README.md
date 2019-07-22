@@ -1,5 +1,5 @@
 # Expression set analysis
-Below we describe the various steps included in the main analysis script [R_SAGA_FinalDataSet_GSEA_169.R](./ R_SAGA_FinalDataSet_GSEA_169.R).
+Below we describe the various steps included in the main analysis script [R_SAGA_FinalDataSet_GSEA_169.R](./R_SAGA_FinalDataSet_GSEA_169.R).
 ## Microarray data processing
 The data was analyzed using R 3.5.1 and Bioconductor 3.735. Raw files were read in separately for each array design with the function “read.maimages” from the R package “limma” 37. A merged dataset was created by extracting all probes derived from the original Agilent Mouse Genome Oligo Microarray 4x44K v2 array (A_XX_PXXXXXX) from the four array platforms and combining them using the function “cbind.EList” from “limma”. The probe with the ID “A_55_P2337033“ interrogating the gene “2310065F04Rik” was excluded from the dataset since it strongly cross-reacted with the sequence of EGFP. Array quality was assessed by interrogation of the probe intensity distributions and by principal component analysis of log2-transformed unprocessed data. At this point one complete SAGA assay and two outlier arrays were excluded from further analysis due to low overall signal strength. The Raw data was log2-transformed and quantile-normalized using the ”limma” package. The success of preprocessing was verified by inspection of the probe intensity distributions before and after preprocessing (Supplementary Fig 1a,b). The four within-array replicates of each probe were collapsed using the “avereps” function from the R package “limma” resulting in a dataset with 39428 unique probes. Probes interrogating the same gene were not collapsed any further, since most genes were only interrogated by one probe on this platform. In the quantile-normalized data, a substantial batch effect between different SAGA assays was observed (Supplementary Fig 1c). Batch correction between different SAGA assays was performed on quantile-normalized log2-values, by using the parametric ComBat algorithm as implemented in the R package “sva”38 (Supplementary Fig 1d,e) with the SAGA number as batch variable and all other parameters set to default. 
 ## t-SNE and PCA visualizations
@@ -13,7 +13,7 @@ The quantile normalized and batch corrected SAGA expression matrix (36,226 annot
 
 The following files can be downloaded [here]():
 *	Expression set analysis.RData
-*	[R_SAGA_FinalDataSet_GSEA_169.R](./ R_SAGA_FinalDataSet_GSEA_169.R)
+*	[R_SAGA_FinalDataSet_GSEA_169.R](./R_SAGA_FinalDataSet_GSEA_169.R)
 *	4467.txt
 *	4469.txt
 *	4471.txt
