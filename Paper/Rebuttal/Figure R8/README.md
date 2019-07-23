@@ -34,9 +34,6 @@ The following files can be downloaded [here](https://owncloud.gwdg.de/index.php/
 *	DensityPlot_6199_6199V12.pdf
 *	DensityPlot_6251_6251V12.pdf
 *	DensityPlot_6253_6253V12.pdf
-*	Figure R8.ai
-*	Figure R8.png
-*	R_diffFeatExtr.R
 *	Regression_6251_vs_6215V12.pdf
 *	RegressionPlot_6253 vs 6253V12.pdf
 *	Targets.txt
