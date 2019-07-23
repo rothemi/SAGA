@@ -1,21 +1,7 @@
 # *S*urrogate *A*ssay for *G*enotoxicity *A*ssessment (SAGA)
 
-# How to use SAGA with provided test files
-The user needs to download the following files into one single folder:
+In our paper **Predicting genotoxicity of integrating viral vectors for stem cell gene therapy using gene expression-based machine learning**, we report an improved *in vitro* test to determine the risk of insertional mutagenesis of integrating vectors for gene therapy. SAGA builds on the well accepted cell culture protocol of the **_I_**_n_ **_V_**_itro_ **IM**mortalization (**IVIM**) assay but screens for the deregulation of oncogenic gene expression signatures. We demonstrate a new bioinformatic approach to correctly classify the mutagenic potential of retroviral vectors used in previous and current clinical trials.
 
-* SAGA script [“R_Package_SAGA_V6.R” ](/R_Package_SAGA_V6.R)
-* [“SampleInformation.txt”](/SampleInformation.txt) file
-* The folder [“SAGA_INBUILD”](/SAGA_INBUILD)
-* The sample files (to test SAGA, download test files [here](https://www.dropbox.com/sh/v0xjkgibxq8btgr/AABUx5l0e0qcVHtGqegCA79ca?dl=0) (~800 MB))
+## Concepts discribed in the  [Paper](./Paper/README.md):
 
-Before using SAGA, the user needs to specify this new folder in R by the following command:
 
-setwd("c:/name of your folder")
-
-Now, the script can be sourced or executed row by row. By following this instruction, the test files can be analysed. Alternatively, the user can provide his own sample files.
-
-(Important: the Sampleinformation.txt must be adapted in that case!).
-
-A detailed description of all functions used in the R-script, instructions for creating a SampleInformation file and how to interpret the SAGA results can be found in the [SAGA_Vignette](./saga_vignette.pdf).
-
-Here, the [SAGA results](./SAGA_test_files_Results) for the provided test files can be found.
