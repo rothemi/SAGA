@@ -1,4 +1,4 @@
-# **S**urrogate **A**ssay for **G**enotoxicity **A**ssessment
+# *S*urrogate *A*ssay for *G*enotoxicity *A*ssessment (SAGA)
 
 # How to use SAGA with provided test files
 The user needs to download the following files into one single folder:
