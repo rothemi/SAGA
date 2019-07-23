@@ -1,5 +1,5 @@
 # Feature Selection with IQR 0.5
-In addition to the main [Feature Selection script](../../../Paper/Feature%20Selection/20190306_rfe_GA40_152_10TestSets_IQR0.8_FINAL_median.R) where an IQR of 0.8 was used for nonspecific feature prefiltering, we also constructed the SAGA-SVM classifier with an IQR of 0.5 using the script [20190321_rfe_GA40_152_10TestSets_IQR0.5_FINAL.R](./20190321_rfe_GA40_152_10TestSets_IQR0.5_FINAL.R).
+In addition to the main [Feature Selection script](../../../../Paper/Feature%20Selection/20190306_rfe_GA40_152_10TestSets_IQR0.8_FINAL_median.R) where an IQR of 0.8 was used for nonspecific feature prefiltering, we also constructed the SAGA-SVM classifier with an IQR of 0.5 using the script [20190321_rfe_GA40_152_10TestSets_IQR0.5_FINAL.R](./20190321_rfe_GA40_152_10TestSets_IQR0.5_FINAL.R).
 
 ## Availability of raw data and R workspace file
 
