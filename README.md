@@ -1,7 +1,4 @@
-[link](SAGA/Paper/Feature Selection/20190306_rfe_GA40_152_10TestSets_IQR0.8_FINAL_median.R)
-
-# SAGA
-**S**urrogate **A**ssay for **G**enotoxicity **A**ssessment
+# **S**urrogate **A**ssay for **G**enotoxicity **A**ssessment
 
 # How to use SAGA with provided test files
 The user needs to download the following files into one single folder:
