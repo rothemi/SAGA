@@ -12,4 +12,4 @@ We provide the scripts and R Workspace files used in Schwarzer et al., 2019.
 * [Expression Set Analysis](./Paper/Expression%20set%20analysis)
 
 ## [SAGA R package](https://talbotsr.com/saga_package/index.html):
-We provide the SAGA analysis pipeline as a freely available R-package. [SAGA is hosted and maintained on GitHub by Steven R. Talbot](https://github.com/mytalbot/saga_package).
+We provide the SAGA analysis pipeline as a freely available [R-package](https://github.com/mytalbot/saga_package), which is hosted and maintained on GitHub by [Steven R. Talbot](https://github.com/mytalbot).
