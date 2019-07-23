@@ -1,5 +1,5 @@
 # Figure R5
-The script [Figure R5.R](./Figure%20R5.R) was used to generate [Figure R5](../Figure%20R5.png).
+The script [Figure R5.R](./Figure%20R5.R) was used to generate [Figure R5](./Figure%20R5.png).
 
 ## Availability of raw data and R workspace file
 
