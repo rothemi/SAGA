@@ -1,8 +1,0 @@
-"Group"	"Vector"	"Filename"	"SampleID"	"variable"	"geneSet"	"n"	"nes"	"fdr"	"pred.class"
-2	"A9_SIN.AV.EFS"	"42.txt"	"X42"	"Group.2.fc"	"SAGA.CORE"	18	-1.61336530979303	0.0188206312735435	"nontransforming"
-3	"A1_LTR.RV.SF.eGFP"	"43.txt"	"X43"	"Group.3.fc"	"SAGA.CORE"	18	2.22505368322481	4.56378379531941e-10	"transforming"
-4	"A9_SIN.AV.EFS"	"44.txt"	"X44"	"Group.4.fc"	"SAGA.CORE"	18	-1.75709349618365	0.00500651257614093	"nontransforming"
-5	"A10_SIN.AV.SF"	"45.txt"	"X45"	"Group.5.fc"	"SAGA.CORE"	18	-1.28489495718501	0.179231171598559	"nontransforming"
-6	"A9_SIN.AV.EFS"	"46.txt"	"X46"	"Group.6.fc"	"SAGA.CORE"	18	-1.49837488328545	0.0607408007558241	"nontransforming"
-7	"A10_SIN.AV.SF"	"47.txt"	"X47"	"Group.7.fc"	"SAGA.CORE"	18	1.79007045288646	0.00483281062371832	"transforming"
-8	"A10_SIN.AV.SF"	"48.txt"	"X48"	"Group.8.fc"	"SAGA.CORE"	18	1.94547269942643	4.89803384950971e-06	"transforming"
