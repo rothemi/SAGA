@@ -64,7 +64,7 @@ matrix.train.1 <-matrix.train.1[fselect.1,]   # subset
 matrix.train.1 <- (t(matrix.train.1))
 labels.train.1 <- as.factor(pData.train.1$Class)
 
-# calculate accuracy, sensitivity, specificity, ROC and  kappa of external resamples
+# calculate performance measures (accuracy, sensitivity, specificity, ROC) of external resamples
 fiveStats <- function(...) c(twoClassSummary(...), defaultSummary(...))   
 
 ## create 200 resamples of the train data (10foldCVn20) - the same index is used for SVM-rfe for direct model comparison
@@ -80,11 +80,11 @@ fullCtrl.1 <- trainControl(method = "repeatedcv",repeats = 20, # 10foldCVn20
 
 ## build full model on complete training data with all predictors    
 set.seed(721)
-svmFull.1 <- train(matrix.train.1,labels.train.1,              # define training set  
+system.time(svmFull.1 <- train(matrix.train.1,labels.train.1,              # define training set  
                    method = "svmRadial",                       # support vector machine with radial kernel
                    metric = "Accuracy",                        # use accuracy to select the best model
-                   tuneLength = 20,                            # number of cost values to test (Caret creates a range of values and uses a single value of sigma that is calculated internally with kernlab “sigest” function) 
-                   trControl = fullCtrl.1)
+                   tuneLength = 20,                            # number of cost values to test (Caret creates a range of values and uses a single value of sigma that is calculated internally with kernlab âsigestâ function) 
+                   trControl = fullCtrl.1))
 
 svmFull.1  
 svmFull.1$results  
@@ -96,7 +96,7 @@ svmFull.1$results
 #### 4.1 Parameters for outer resampling loop (to assess feature selection) ##################################
 ##############################################################################################################
 
-##  set predictos subset sizes to test: 1,2,…,40,45,50,60,….,500,1151  = 52 subsets in total
+##  set predictors subset sizes to test: 1,2,â¦,40,45,50,60,â¦.,500,1151  = 52 subsets in total
 FeatureNumbers <- c(seq(1,40,by=1),45,50,60,70,80,90,100,200,300,400,500)                 
 
 ## set all seeds for reproducibility: 52 seeds for each of the 200 resamples + 1 for the complete set 
@@ -127,8 +127,8 @@ innerctrl <- trainControl(method = "repeatedcv",repeats = 3,           # 10CVn3 
 #### 4.3.SVM-RFE #############################################################################################
 ##############################################################################################################
 
-# 200 outer resamples x 52 subsetSizes = 10,400 Predictions of HeldOuts x 30 internal resamples for tuning x 20 values for cost parameter = 6,240,000 models
-# this will take around 3-4 hours on an AWS EC2 c5.18xlarge instance with 72 CPUs and 144 Gb of RAM
+# 200 outer resamples x 52 subsetSizes = 10,400 Predictions of external holdouts x 30 internal resamples for tuning x 20 values for cost parameter = 6,240,000 steps
+# this will take around 4-5 hours on an AWS EC2 c5.18xlarge instance with 72 CPUs and 144 Gb of RAM
 
 system.time(rfe.1  <- rfe(matrix.train.1, labels.train.1, 
                           sizes=FeatureNumbers,
@@ -189,11 +189,11 @@ legend(25,-20, legend = c("transforming","mock","neutral","TestSet"), col = uniq
 ################################################################################################
 
 set.seed(721)
-svmOpt.1  <- train(t(matrix.train.rfe.1),labels.train.1,
-                   method = "svmRadial",
-                   metric = "Accuracy",
-                   tuneLength = 20,
-                   trControl = fullCtrl.1)   # use same parameters as for the SVMfull model (10CVn20/index.1)
+system.time(svmOpt.1  <- train(t(matrix.train.rfe.1),labels.train.1,
+                              method = "svmRadial",
+                              metric = "Accuracy",
+                              tuneLength = 20,
+                              trControl = fullCtrl.1))   # use same parameters as for the SVMfull model (10CVn20/index.1)
 svmOpt.1  
 
 # Resampling results for the optVars Model with 107 samples and 7 predictors 
@@ -203,9 +203,8 @@ svmOpt.1
 # 0.9797976  0.95525  0.9582143  0.9571288  0.9124974 
 
 # note: these resampling values seem to be better than the external resampling results (above) due to selection bias, 
-#  since the error rates are based on the SVM model after the optimal features for exactly this training set have been selected by rfe.
+# since the error rates are based on the SVM model after! the optimal features for exactly this training set have been selected by rfe.
   
-
 ##### Predict TestSet 1 with optimal predictors
 Prediction_rfe.1 <- predict(svmOpt.1,t(matrix.test.rfe.1), type = "prob")
 Prediction_rfe.1$Prediction_rfe.1 <- ifelse(Prediction_rfe.1$transforming>0.50,"transforming","untransforming")
@@ -334,9 +333,6 @@ outerctrl.2$functions$summary <- fiveStats
 #### 3.2.SVM-RFE #############################################################################################
 ##############################################################################################################
 
-# 200 outer resamples x 52 subsetSizes = 10,400 Predictions of HeldOuts x 30 internal resamples for tuning at each outer resampling iteration = 312,000 models
-# this will take around 2 hours on an AWS EC2 c5.18xlarge instance with 72 CPUs and 144 Gb of RAM
-
 system.time(rfe.2 <- rfe(matrix.train.2, labels.train.2, 
                          sizes=FeatureNumbers,
                          rfeControl=outerctrl.2,
@@ -376,7 +372,7 @@ matrix.train.rfe.2 <- matrix.train.2[,rfe.2$optVariables]   # subset training ma
 
 #### 4.1 Set global SVM-GA Parameters:##########################################################
 ################################################################################################
-svmGA <- caretGA  # predefined helper functions for the genetic algorithm 
+svmGA <- caretGA  # predefined helper functions for the genetic algorithm
 
 # define custom function to create an initial population with individuals that consist of 40% of the features on average to ensure efficient reduction in feature number
 initial40 <- function (vars, popSize, ...) {x <- matrix(NA, nrow = popSize, ncol = vars)
@@ -653,9 +649,6 @@ outerctrl.3$functions$summary <- fiveStats
 
 #### 3.2.SVM-RFE #############################################################################################
 ##############################################################################################################
-
-# 200 outer resamples x 52 subsetSizes = 10,400 Predictions of HeldOuts x 30 internal resamples for tuning at each outer resampling iteration = 312,000 models
-# this will take around 2 hours on an AWS EC2 c5.18xlarge instance with 72 CPUs and 144 Gb of RAM
 
 system.time(rfe.3  <- rfe(matrix.train.3, labels.train.3, 
                           sizes=FeatureNumbers,
@@ -942,9 +935,6 @@ outerctrl.4$functions$summary <- fiveStats
 #### 3.2.SVM-RFE #############################################################################################
 ##############################################################################################################
 
-# 200 outer resamples x 52 subsetSizes = 10,400 Predictions of HeldOuts x 30 internal resamples for tuning at each outer resampling iteration = 312,000 models
-# this will take around 2 hours on an AWS EC2 c5.18xlarge instance with 72 CPUs and 144 Gb of RAM
-
 system.time(rfe.4  <- rfe(matrix.train.4, labels.train.4, 
                           sizes=FeatureNumbers,
                           rfeControl=outerctrl.4,
@@ -1117,9 +1107,6 @@ outerctrl.5$functions$summary <- fiveStats
 
 #### 3.2 SVM-RFE #############################################################################################
 ##############################################################################################################
-
-# 200 outer resamples x 52 subsetSizes = 10,400 Predictions of HeldOuts x 30 internal resamples for tuning at each outer resampling iteration = 312,000 models
-# this will take around 2 hours on an AWS EC2 c5.18xlarge instance with 72 CPUs and 144 Gb of RAM
 
 system.time(rfe.5  <- rfe(matrix.train.5, labels.train.5, 
                           sizes=FeatureNumbers,
@@ -1294,8 +1281,6 @@ outerctrl.6$functions$summary <- fiveStats
 #### 3.2.SVM-RFE #############################################################################################
 ##############################################################################################################
 
-# 200 outer resamples x 52 subsetSizes = 10,400 Predictions of HeldOuts x 30 internal resamples for tuning at each outer resampling iteration = 312,000 models
-# this will take around 2 hours on an AWS EC2 c5.18xlarge instance with 72 CPUs and 144 Gb of RAM
 system.time(rfe.6  <- rfe(matrix.train.6, labels.train.6, 
                           sizes=FeatureNumbers,
                           rfeControl=outerctrl.6,
@@ -2155,9 +2140,6 @@ outerctrl.9$functions$summary <- fiveStats
 #### 3.2 SVM-RFE #############################################################################################
 ##############################################################################################################
 
-# 200 outer resamples x 52 subsetSizes = 10,400 Predictions of HeldOuts x 30 internal resamples for tuning at each outer resampling iteration = 312,000 models
-# this will take around 2 hours on an AWS EC2 c5.18xlarge instance with 72 CPUs and 144 Gb of RAM
-
 system.time(rfe.9  <- rfe(matrix.train.9, labels.train.9, 
                           sizes=FeatureNumbers,
                           rfeControl=outerctrl.9,
@@ -2326,9 +2308,6 @@ outerctrl.10$functions$summary <- fiveStats
 
 #### 3.2 SVM-RFE TrainingSet 10 ##################################################################################
 ##############################################################################################################
-
-# 200 outer resamples x 52 subsetSizes = 10,400 Predictions of HeldOuts x 30 internal resamples for tuning at each outer resampling iteration = 312,000 models
-# this will take around 2 hours on an AWS EC2 c5.18xlarge instance with 72 CPUs and 144 Gb of RAM
 
 system.time(rfe.10  <- rfe(matrix.train.10, labels.train.10, 
                           sizes=FeatureNumbers,
@@ -2550,6 +2529,7 @@ roc.full<- roc(Prediction_SVM_full.10$Class,                    # response vecto
 
 fselect.FINAL  <- genefilter(eset.batch, filterfun(f1))
 summary(fselect.FINAL)                              # 1243 features selected by nonspecific filtering
+matrix.train.FINAL <-eset.batch[fselect.FINAL,]
 
 Annotation.matrix.train.FINAL <- Annotation[row.names(matrix.train.FINAL),]
 write.table(Annotation.matrix.train.FINAL, file = "Annotation.matrix.train.FINAL.txt", sep="\t",col.names=NA)
@@ -2606,9 +2586,6 @@ outerctrl.FINAL$functions$summary <- fiveStats
 
 #### 3.2 SVM-RFE FINAL #######################################################################################
 ##############################################################################################################
-
-# 200 outer resamples x 52 subsetSizes = 10,400 Predictions of HeldOuts x 30 internal resamples for tuning at each outer resampling iteration = 312,000 models
-# this will take around 2 hours on an AWS EC2 c5.18xlarge instance with 72 CPUs and 144 Gb of RAM
 
 system.time(rfe.FINAL  <- rfe(matrix.train.FINAL, labels.train.FINAL, 
                               sizes=FeatureNumbers,
@@ -2762,8 +2739,7 @@ roc.b <- roc(b$Class,
              plot=T, auc.polygon=F, max.auc.polygon=F, col = "#000000", grid=F,
              print.auc=T,print.thres=0.5)
 
-
-
+roc.b
 
 
 #############################################################################################################################################
@@ -3187,61 +3163,6 @@ ROC.SAGA.other <- roc(Predictions_SAGA_other$Class,
 
 
 roc.test(ROC.SAGA.other, IVIM.noLTR.152,alternative = "greater")
-
-
-
-
-
-### 6.2. Supplementary Figure 3l: 
-roc.full <-  roc(Predictions_SVM_full$Class,                    
-                    Predictions_SVM_full$transforming,             
-                    percent=TRUE, levels=c("nontransforming","transforming"),
-                    plot=T, auc.polygon=F, max.auc.polygon=F, col = "#000000", grid=F,
-                    print.auc=T,print.thres=0.5)
-
-
-roc.rfe.all <- roc(Predictions_RFE$Class,                    
-                   Predictions_RFE$transforming,             
-                   percent=TRUE, levels=c("nontransforming","transforming"),
-                   plot=T, auc.polygon=F, max.auc.polygon=F, col = "#4A6893", grid=F,
-                   print.auc=T,print.thres=0.5, add = T)
-
-roc.GA.all <- roc( Predictions_GA$Class,                    
-                   Predictions_GA$transforming,             
-                   percent=TRUE, levels=c("nontransforming","transforming"),
-                   plot=T, auc.polygon=F, max.auc.polygon=F, col ="#E8534F", grid=F,
-                   print.auc=T, add = T,print.thres=0.5)
-
-roc.comp   <- roc( Predictions_comp$Class,                    
-                   Predictions_comp$transforming,             
-                   percent=TRUE, levels=c("nontransforming","transforming"),
-                   plot=T, auc.polygon=F, max.auc.polygon=F, col ="#F9C35F", grid=F,
-                   print.auc=T, add = T,print.thres=0.5)
-
-
-### 6.2. Supplementary Figure 3m: 
-## comparisons for the Test/Training Splits 2,3,6,7,8,10 for which full, rfe and GA is available = 255 predictions each 
-
-roc.full.GA <-  roc(Predictions_SVM_full_GA$Class,                    
-                    Predictions_SVM_full_GA$transforming,             
-                    percent=TRUE, levels=c("nontransforming","transforming"),
-                    plot=T, auc.polygon=F, max.auc.polygon=F, col = "#000000", grid=F,
-                    print.auc=T,print.thres=0.5)
-
-roc.rfe.GA <- roc(Predictions_RFE_GA$Class,                    
-                  Predictions_RFE_GA$transforming,             
-                   percent=TRUE, levels=c("nontransforming","transforming"),
-                   plot=T, auc.polygon=F, max.auc.polygon=F, col = "#A50F15", grid=F,
-                   print.auc=T,print.thres=0.5, add = T)
-
-roc.GA.all <- roc( Predictions_GA$Class,                    
-                   Predictions_GA$transforming,             
-                   percent=TRUE, levels=c("nontransforming","transforming"),
-                   plot=T, auc.polygon=F, max.auc.polygon=F, col ="#08306B", grid=F,
-                   print.auc=T, add = T,print.thres=0.5)
-
-roc.test(roc.full.GA, roc.GA.all, reuse.auc=FALSE, partial.auc=c(70,100), partial.auc.focus="se")
-roc.test(roc.full.GA, roc.rfe.GA, reuse.auc=FALSE, partial.auc=c(70,100), partial.auc.focus="se")
 
 
 #############################################################################################################################################
