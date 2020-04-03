@@ -6,7 +6,7 @@ With the script [R_FeatureSelection_batchwise_154_FINAL_20200312.R](./R_FeatureS
 
 The raw data folder should be in the same folder as the R script and can be downloaded [here](https://www.dropbox.com/sh/9a465p7nnfrjoie/AADLhB42EC_z0EUd1Zs9NOwTa?dl=0)
 
-The following results and the .RData file can be downloaded [here](https://owncloud.gwdg.de/index.php/s/u5nKHkGj0oHNgfm):
+The .RData file can be downloaded [here](https://www.dropbox.com/s/ocyy8ogqp7g7ncf/.RData?dl=0), all other files and results [here](https://owncloud.gwdg.de/index.php/s/u5nKHkGj0oHNgfm):
 *	AllTestSets_ConfusionMatrix_SAGA.txt
 *	AllTestSetsConfusionMatrix_FULL.txt
 *	AllTestSetsConfusionMatrix_rfe.txt
