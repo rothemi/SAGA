@@ -7,7 +7,7 @@ The development of the predictive model of SAGA was implemented using the R pack
 The following files can be downloaded [here](https://owncloud.gwdg.de/index.php/s/nHjGbn5sAnU93SV):
 
 *	Feature_Selection.RData
-*	[20200322_rfe_GA40_152_10TestSets_IQR0.8_FINAL_median](./20200322_rfe_GA40_152_10TestSets_IQR0.8_FINAL_median)
+*	[20200322_rfe_GA40_152_10TestSets_IQR0.8_FINAL_median.R](./20200322_rfe_GA40_152_10TestSets_IQR0.8_FINAL_median.R)
 * AllResults_Accuracy_full_TestSet vs Resampling_IQR0.8.pdf
 * AllResults_Accuracy_full_TestSet vs Resampling_IQR0.8_Median.pdf
 * AllResults_Accuracy_GA_TestSet vs Resampling_IQR0.8.pdf
