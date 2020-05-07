@@ -140,7 +140,7 @@ plot(Rtsne(t(RMA_train.1$E),dims = 2, perplexity = 16,check_duplicates = FALSE,p
 batch.train.1 <- pData.train.1$Batch-1                       
 modcombat     <- model.matrix(~1, data=pData.train.1)         
 matrix.train.1.batch <- ComBat(dat=RMA_train.1$E, batch=batch.train.1, mod=modcombat,par.prior=TRUE, prior.plots=FALSE)
-matrix.train.1.batch <- matrix.train.1.batch[row.names(Annotation.known),]
+matrix.train.1.batch <- matrix.train.1.batch[row.names(Annotation.known),] # filter for 36,226 annotated probes
 
 #### 2.4 t-SNE of batch corrected dataset ####################################################################
 set.seed(12)
@@ -180,7 +180,7 @@ set.seed(721)
 system.time(svmFull.1 <- train(matrix.train.1,labels.train.1,  # define training set  
                                method = "svmRadial",           # support vector machine with radial kernel
                                metric = "Accuracy",            # use accuracy to select the best model
-                               tuneLength = 20,                # number of cost values to test (Caret creates a range of values and uses a single value of sigma that is calculated internally with kernlab âsigestâ function) 
+                               tuneLength = 20,                # number of cost values to test (Caret creates a range of values and uses a single value of sigma that is calculated internally with kernlab “sigest” function) 
                                trControl = fullCtrl.1))
 svmFull.1  
 
@@ -191,7 +191,7 @@ svmFull.1
 #### 5.1 Parameters for outer resampling loop (to assess feature selection) ##################################
 ##############################################################################################################
 
-##  set predictors subset sizes to test: 1,2,â¦,40,45,50  = 43 subsets in total
+##  set predictors subset sizes to test: 1,2,…,40,45,50  = 43 subsets in total
 FeatureNumbers <- c(seq(1,40,by=1),45,50)                 
 
 ## set all seeds for reproducibility: 52 seeds for each of the 200 resamples + 1 for the complete set 
@@ -6551,7 +6551,7 @@ Prediction_GA.19 <- cbind(pData.test.19[,c(1:3)],TrueLabel=pData.test.19$Class,P
 write.table(Prediction_GA.19, file = paste("TestSet19_Predictions_optVars_GA.txt",sep = ""), sep="\t",row.names = TRUE,col.names=NA)
 
 
-##### 7.7 Predict TestSet199 with all predictors ##############################################################
+##### 7.7 Predict TestSet19 with all predictors ##############################################################
 ##############################################################################################################
 set.seed(721)
 svmOpt.full.19  <- train(matrix.train.19.bapred.full,labels.train.19,
@@ -6817,7 +6817,7 @@ IVIM$Prediction <- ifelse(IVIM$MTT_Score>=3,"transforming","untransforming")
 IVIM$TrueLabel  <- ifelse(IVIM$Classification_Code==1,"transforming","untransforming")
 confusionMatrix(as.factor(IVIM$Prediction), as.factor(IVIM$TrueLabel))
 
-### 2.6.2. IVIM vs SAGA AUROC (for all vectors) #############################################################################################
+### 2.6.2. IVIM vs SAGA AUROC (for all vectors) Figure 3i ###################################################################################
 #############################################################################################################################################
 IVIM.total <- roc(IVIM$Classification_Code,    # response vector (factor or character)
                   IVIM$MTT_Score,              # predictor vector (numeric)
@@ -6837,14 +6837,14 @@ roc.SAGA   <- roc( Predictions_SAGA$Class,
 roc.test(roc.SAGA, IVIM.total, alternative = "greater")   # p-value = 2.817e-05
 
 
-### 2.6.4. IVIM vs SAGA on LTR.RV.SF only ###################################################################################################
+### 2.6.4. IVIM vs SAGA on LTR.RV.SF only: Supplementary Figure 6b ###################################################################################################
 #############################################################################################################################################
 selected  <- c("MOCK","LTR.RV.SF")  # select Mock controls and LTR.SF in IVIM data
 IVIM.sel1 <- subset(IVIM,IVIM$Vector %in% selected)
 confusionMatrix(as.factor(IVIM.sel1$Prediction), as.factor(IVIM.sel1$TrueLabel))
 
 IVIM.LTR.SF <- roc(IVIM.sel1$Classification_Code,    # response vector (factor or character)
-                   IVIM.sel1$MTT_Score,          # predictor vector (numeric)
+                   IVIM.sel1$MTT_Score,              # predictor vector (numeric)
                    percent=TRUE, smooth = F,
                    plot=TRUE, auc.polygon=F, max.auc.polygon=F,
                    col = "#8285BC", grid=F, lwd = 3, cex.lab=1.5, 
@@ -6852,7 +6852,10 @@ IVIM.LTR.SF <- roc(IVIM.sel1$Classification_Code,    # response vector (factor o
 
 # select Mock controls and LTR.SF in SAGA Predictions in the TestSets
 Predictions_SAGA_LTR.SF <- Predictions_SAGA[(grepl("Mock",Predictions_SAGA$Name) | grepl("RV.SF",Predictions_SAGA$Name)),]
+
+sink("ConfusionMatrix_SAGA_LTR.SF vs Mock.txt", append = TRUE)
 confusionMatrix(as.factor(Predictions_SAGA_LTR.SF$Prediction), as.factor(Predictions_SAGA_LTR.SF$TrueLabel))
+sink()
 
 ROC.SAGA.LTR.SF   <- roc(Predictions_SAGA_LTR.SF$Class,                    
                          Predictions_SAGA_LTR.SF$transforming,             
@@ -6862,7 +6865,7 @@ ROC.SAGA.LTR.SF   <- roc(Predictions_SAGA_LTR.SF$Class,
 
 roc.test(ROC.SAGA.LTR.SF, IVIM.LTR.SF, alternative = "greater" )   #p-value = 3.037e-11
 
-### 2.6.5. IVIM vs SAGA non-LTR vectors #####################################################################################################
+### 2.6.5. IVIM vs SAGA non-LTR vectors Supplementary Figure 6c #############################################################################
 #############################################################################################################################################
 IVIM.sel2 <- subset(IVIM, IVIM$Vector!= "LTR.RV.SF")
 confusionMatrix(as.factor(IVIM.sel2$Prediction), as.factor(IVIM.sel2$TrueLabel))
@@ -6889,7 +6892,7 @@ roc.test(ROC.SAGA.other, ROC.IVIM.other, alternative = "greater" )  # p = 0.0124
 ### 2.6.6. IVIM vs SAGA PRROC ###############################################################################################################
 #############################################################################################################################################
 
-### 2.6.6.1 for all vectors  ################################################################################################################
+### 2.6.6.1 for all vectors: Figure 3j  #####################################################################################################
 AUPRC.SAGA <- pr.curve(scores.class0 = Predictions_SAGA$transforming , weights.class0 = Predictions_SAGA$Class_Code, curve = TRUE,rand.compute = T)
 plot(AUPRC.SAGA, rand.plot = TRUE, legend = F, color = "#F9C35F", main = "",auc.main = FALSE)  # AUPRC = 0.944  / AUC random = 0.422
 
@@ -6897,7 +6900,7 @@ IVIM$Class_Code <- ifelse(IVIM$TrueLabel == "transforming",1,0)
 AUPRC.IVIM <- pr.curve(scores.class0 = IVIM$MTT_Score, weights.class0 = as.numeric(IVIM$Class_Code), curve = TRUE,rand.compute = T)
 plot(AUPRC.IVIM, rand.plot = TRUE, legend = F, color = "#8285BC", add = TRUE) # AUPRC = 0.892  / AUC random = 0.582
 
-### 2.6.2.2 for LTR.SF #####################################################################################################################
+### 2.6.2.2 for LTR.SF Supplementary Figure 6b #####################################################################################################################
 AUPRC.SAGA.LTR <- pr.curve(scores.class0 = Predictions_SAGA_LTR.SF$transforming , weights.class0 = Predictions_SAGA_LTR.SF$Class_Code, curve = TRUE,rand.compute = T)
 plot(AUPRC.SAGA.LTR, rand.plot = TRUE, legend = F, color = "#F9C35F", main = "")  # AUPRC = 0.9993  / AUC random = 0.521
 
@@ -6905,7 +6908,7 @@ IVIM.sel1$Class_Code <- ifelse(IVIM.sel1$TrueLabel == "transforming",1,0)
 AUPRC.IVIM.LTR <- pr.curve(scores.class0 = IVIM.sel1$MTT_Score, weights.class0 = as.numeric(IVIM.sel1$Class_Code), curve = TRUE,rand.compute = T)
 plot(AUPRC.IVIM.LTR, rand.plot = TRUE, legend = F, color = "#8285BC", add = TRUE) # AUPRC = 0.94 / AUC random = 0.64
 
-### 2.6.2.3 for non-LTR.SF  #################################################################################################################
+### 2.6.2.3 for non-LTR.SF  Supplementary Figure 6c #################################################################################################################
 AUPRC.SAGA.other <- pr.curve(scores.class0 = Predictions_SAGA_other$transforming , weights.class0 = Predictions_SAGA_other$Class_Code, curve = TRUE,rand.compute = T)
 plot(AUPRC.SAGA.other, rand.plot = TRUE, legend = F, color = "#F9C35F", main = "")  # AUPRC = 0.79  / AUC random = 0.24
 
@@ -6915,79 +6918,16 @@ plot(AUPRC.IVIM.other, rand.plot = TRUE, legend = F, color = "#8285BC", add = TR
 
 
 
-
-
 #############################################################################################################################################
-### 3. Compare average resampling results vs average TestSet results for the batchwise approach #############################################
+### 2.7. Toplist of predictors chosen during the 19 iterations / Table 1 ####################################################################
 #############################################################################################################################################
 
-# Note: most of the batchwise TestSets are to small to estimate the errors of the prediction accuracy,therefore only the aggregated TestSet Predictions will be analyzed
+all.optVars <- c(optVars.GA.1$GeneSymbol_FINAL,optFeatures.rfe.2$GeneSymbol_FINAL,optVars.GA.3$GeneSymbol_FINAL,optVars.GA.4$GeneSymbol_FINAL,optVars.GA.5$GeneSymbol_FINAL,
+                 optVars.GA.6$GeneSymbol_FINAL,optVars.GA.7$GeneSymbol_FINAL,optVars.GA.8$GeneSymbol_FINAL,optVars.GA.9$GeneSymbol_FINAL,optVars.GA.10$GeneSymbol_FINAL,
+                 optVars.GA.11$GeneSymbol_FINAL,optVars.GA.12$GeneSymbol_FINAL,optVars.GA.13$GeneSymbol_FINAL,optVars.GA.14$GeneSymbol_FINAL,optVars.GA.15$GeneSymbol_FINAL,
+                 optVars.GA.16$GeneSymbol_FINAL,optVars.GA.17$GeneSymbol_FINAL,optVars.GA.18$GeneSymbol_FINAL,optVars.GA.19$GeneSymbol_FINAL)
 
-### for full model / Figure 3d: #############################################################################
-Accuracy_TestSet_full.median   <- median(df.results$Accuracy_TestSet_full)
-ResamplingAccuracy_full.median <- median(df.results$ResamplingAccuracy_full)
+b <- table(all.optVars)
+b <- b[order(b,decreasing = T)]
 
-ggplot(df.results, aes(Accuracy_TestSet_full,ResamplingAccuracy_full, label = Testset)) +
-  geom_point(size=7) +
-  geom_errorbarh(aes(xmin = CI_Test_full_lower,  xmax= CI_Test_full_upper, height = 0.003),colour = "black",size = 0.2) +
-  geom_errorbar (aes(ymin = CI_full_lower, ymax = CI_full_upper, width = 0.003),colour = "black",size = 0.3) +
-  geom_point(aes(x=Accuracy_TestSet_full.median, y=ResamplingAccuracy_full.median), colour="red", size = 7)+
-  coord_fixed(ratio = 1, xlim=c(0.65,1),ylim=c(0.65,1)) +
-  geom_abline(intercept = 0, slope = 1, color = "red",linetype = "dashed") + 
-  geom_text(aes(label=Testset),hjust=0.5, vjust=0.5, colour = "white", size = 5,fontface="bold") +
-  scale_y_continuous(breaks=seq(0.65,1, 0.05)) + 
-  scale_x_continuous(breaks=seq(0.65,1, 0.05)) + 
-  xlab("Test set accuracy" ) +
-  ylab("Cross-validation accuracy") +
-  theme_bw() +
-  theme(axis.title.x = element_text(size=17),axis.title.y = element_text(size=17),
-        axis.text = element_text(size=14, color ="black"),
-        axis.line = element_line(colour = "black"),
-        panel.grid.minor.y = element_blank(), panel.grid.minor.x = element_blank())
-
-
-### for SVM-rfe / Figure 3e:  #############################################################################
-Accuracy_TestSet_rfe.median   <- median(df.results$Accuracy_TestSet_rfe)
-ResamplingAccuracy_rfe.median <- median(df.results$ResamplingAccuracy_rfe)
-
-ggplot(df.results, aes(Accuracy_TestSet_rfe,ResamplingAccuracy_rfe, label = Testset)) +
-  geom_point(size=7) +
-  geom_errorbarh(aes(xmin = CI_Test_rfe_lower,  xmax= CI_Test_rfe_upper, height = 0.003),colour = "black",size = 0.2) +
-  geom_errorbar (aes(ymin = CI_rfe_lower, ymax = CI_rfe_upper, width = 0.003),colour = "black",size = 0.3) +
-  geom_point(aes(x=Accuracy_TestSet_rfe.median, y=ResamplingAccuracy_rfe.median), colour="red", size = 7)+
-  coord_fixed(ratio = 1, xlim=c(0.65,1),ylim=c(0.65,1)) +
-  geom_abline(intercept = 0, slope = 1, color = "red",linetype = "dashed") + 
-  geom_text(aes(label=Testset),hjust=0.5, vjust=0.5, colour = "white", size = 5,fontface="bold") +
-  scale_y_continuous(breaks=seq(0.65,1, 0.05)) + 
-  scale_x_continuous(breaks=seq(0.65,1, 0.05)) + 
-  xlab("Test set accuracy" ) +
-  ylab("Cross-validation accuracy") +
-  theme_bw() +
-  theme(axis.title.x = element_text(size=17),axis.title.y = element_text(size=17),
-        axis.text = element_text(size=14, color ="black"),
-        axis.line = element_line(colour = "black"),
-        panel.grid.minor.y = element_blank(), panel.grid.minor.x = element_blank())
-
-
-### for SVM-GA / Figure 3f  #############################################################################
-df.results.GA              <- df.results[c(2,3,6,7,8,10),]    # subset for the Training / TestSet splits in which GA was performed 
-Accuracy_TestSet_GA.median   <- median(df.results.GA$Accuracy_TestSet_GA)
-ResamplingAccuracy_GA.median <- median(df.results.GA$ResamplingAccuracy_GA)
-
-ggplot(df.results.GA, aes(Accuracy_TestSet_GA,ResamplingAccuracy_GA, label = Testset)) +
-  geom_point(size=7) +
-  geom_errorbarh(aes(xmin = CI_Test_GA_lower,  xmax= CI_Test_GA_upper, height = 0.003),colour = "black",size = 0.2) +
-  geom_errorbar (aes(ymin = CI_GA_lower, ymax = CI_GA_upper, width = 0.003),colour = "black",size = 0.3) +
-  geom_point(aes(x=Accuracy_TestSet_GA.median, y=ResamplingAccuracy_GA.median), colour="red", size = 7)+
-  coord_fixed(ratio = 1, xlim=c(0.65,1),ylim=c(0.65,1)) +
-  geom_abline(intercept = 0, slope = 1, color = "red",linetype = "dashed") + 
-  geom_text(aes(label=Testset),hjust=0.5, vjust=0.5, colour = "white", size = 5,fontface="bold") +
-  scale_y_continuous(breaks=seq(0.65,1, 0.05)) + 
-  scale_x_continuous(breaks=seq(0.65,1, 0.05)) + 
-  xlab("Test set accuracy" ) +
-  ylab("Cross-validation accuracy") +
-  theme_bw() +
-  theme(axis.title.x = element_text(size=17),axis.title.y = element_text(size=17),
-        axis.text = element_text(size=14, color ="black"),
-        axis.line = element_line(colour = "black"),
-        panel.grid.minor.y = element_blank(), panel.grid.minor.x = element_blank())
+write.table(b, file="Toplist_optimal predictors_batchwise.txt", sep="\t")
