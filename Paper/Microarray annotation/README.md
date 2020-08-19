@@ -5,10 +5,10 @@ Since the annotation of microarray probes may change as the annotation of the ge
 ## Availability of raw data and R workspace file
 
 The following files can be downloaded [here](https://owncloud.gwdg.de/index.php/s/83axjKOt1JrviwS):
-*	Microarray annotation.RData
 *	Agilent_Annotation_026655_D_AA_20171030_wo.txt
+*	Microarray_annotation.RData
 *	Annotation_Gencode.vM18.txt
-*	[Annotation_GencodeM18_3MM_BioMart_FINAL.R](./Annotation_GencodeM18_3MM_BioMart_FINAL.R)
+*	Annotation_GencodeM18_3MM_BioMart_FINAL.R
 *	Annotation_pc_Gencode.vM18.txt
 *	Annotation_SAGA_FINAL_20181128.txt
 *	Annotation_SAGA_FINAL_KNOWN_20181128.txt
@@ -17,5 +17,3 @@ The following files can be downloaded [here](https://owncloud.gwdg.de/index.php/
 *	gencode.vM18.transcripts.fa
 *	GeneTypes_Annotation_SAGA_FINAL_39428.txt
 *	SAGA_INBUILD_Annotation.txt
-*	SAGA_INBUILD_CORE19.txt
-*	SAGA_INBUILD_Top9_GA.txt
