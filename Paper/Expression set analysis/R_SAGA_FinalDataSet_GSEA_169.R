@@ -90,10 +90,12 @@ write.table(SAGA_matrix, file = "RAW_FullSagaSet169_quadruplicates_FINAL.txt", s
 
 eset.RAW     <- SAGA_RAW$E
 eset.RAW.AVE <- avereps(eset.RAW, ID= SAGA_RAW$genes$ProbeName)  
-eset.RAW.AVE <- round(eset.RAW.AVE,0)
 write.table(eset.RAW.AVE, file = "RAW_FullSagaSet169_averaged_FINAL.txt", sep="\t",row.names = TRUE, col.names = NA)
 
-## Supplementary Figure 1a: RAW data intensities ############################################### 
+eset.RAW.AVE.152 <- eset.RAW.AVE[,row.names(pData)]
+write.table(eset.RAW.AVE.152, file = "SAGA_INBUILD_Data_AVE_152.txt", sep="\t",row.names = TRUE, col.names = NA)
+
+## Supplementary Figure 2a: RAW data intensities ############################################### 
 boxplot(log2(SAGA_RAW$E), col=pData.full$IVIM_Color, names=row.names(pData.full),boxwex=0.6,cex.axis=0.35,las=2,outline=FALSE)   #saved as: Boxplot_RAW_FullSagaSet115.pdf    
 
 RAW.DF <- as.data.frame(log2(SAGA_RAW$E))
@@ -109,7 +111,7 @@ SAGA_RMA <- avereps(SAGA_RMA, ID= SAGA_RMA$genes$ProbeName)         # average ov
 eset.rma <- SAGA_RMA$E                                              # export from EList to matrix
 write.table(eset.rma, file = "ESET_RMA_FullSagaSet169_FINAL.txt", sep="\t",row.names = TRUE, col.names = NA)
 
-## Supplementary Figure 1b: normalized and averaged intensities   ##############################
+## Supplementary Figure 2b: normalized and averaged intensities   ##############################
 boxplot(eset.rma,col=pData.full$IVIM_Color,boxwex=0.6,cex.axis=0.35,names=row.names(pData.full), las=2,outline=FALSE) # saved as Boxplot_RMA_FullSagaSet115.pdf         
 
 RMA.DF <- as.data.frame(eset.rma)
@@ -129,7 +131,7 @@ KL <- bplapply(seq_len(1000), Kullback, BPPARAM = bpparam)
 KL <- unlist(KL, use.names=FALSE)    
 seed.index <- which(KL==min(KL))  # get the iteration with the minimum Kullback-Leibler divergence: 520
 
-#### 3.2.3 Supplementary Figure 1c:  ############################################################ 
+#### 3.2.3 Supplementary Figure 2c:  ############################################################ 
 set.seed(seed.index)  
 tsne_out <- Rtsne(t(eset.rma),dims = 2, perplexity = 16,theta = 0.5, pca = FALSE, max_iter = 1000,
                   verbose = FALSE, is_distance = FALSE, check_duplicates = FALSE)
@@ -177,14 +179,14 @@ KLb <- bplapply(seq_len(1000), Kullback.batch, BPPARAM = bpparam) # run 1000 tim
 KLb <- unlist(KLb, use.names=FALSE)    
 seed.index.batch <- which(KLb==min(KLb))    # get the iteration with the minimum Kullback-Leibler divergence:270
 
-#### 4.2.2 Supplementary Figure 1d:  ############################################################
+#### 4.2.2 Supplementary Figure 2d:  ############################################################
 set.seed(seed.index.batch)  
 tsne_out <- Rtsne(t(eset.batch.full),dims = 2, perplexity = 16, theta = 0.5,pca = FALSE, 
                   max_iter = 1000,verbose = FALSE, is_distance = FALSE)
 plot(tsne_out$Y,col=pData.full$IVIM_Color, pch=16, cex=1.4)      
 legend(-13,0, legend=unique(pData.full$IVIM_ID), col=unique(pData.full$IVIM_Color), pch=16, bty="n", cex=0.5)
 
-#### 4.2.3 visualize over Vector Design: Supplementary Figure 1e  ##############################
+#### 4.2.3 visualize over Vector Design: Supplementary Figure 2e  ##############################
 plot(tsne_out$Y,col=pData.full$Design_Color, pch=16, cex=1.4)  
 legend(-13,-5, legend=unique(pData.full$Design), col=unique(pData.full$Design_Color), pch=16, bty="n", cex=1)
 
@@ -372,6 +374,8 @@ write.table(cam.TvS, file="CAMERA_TvS_C2C5HMAMLSTEM.txt",sep="\t",col.names=NA)
 write.table(cam.TvSM, file="CAMERA_TvSM_C2C5HMAMLSTEM.txt",sep="\t",col.names=NA)
 
 
+### Number of Samples used for the analysis: Supplementary_Table_6.txt:
+table(Supplementary_Table_6$Design)
 
 
 
