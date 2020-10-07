@@ -29,8 +29,8 @@ table(is.na(Annotation.ID026655$Description))                           # 35126 
 ################################################################################################
 
 # fasta files downloaded from https://www.gencodegenes.org/mouse/release_M18.html
-Gencode   <- readDNAStringSet("gencode.vM18.transcripts.fa", format="fasta",use.names=TRUE)      # all 136535 Gencode M17 transcripts
-Coding    <- readDNAStringSet("gencode.vM18.pc_transcripts.fa", format="fasta",use.names=TRUE)   # all 64732 coding transcripts
+Gencode   <- readDNAStringSet("gencode.vM18.transcripts.fa", format="fasta",use.names=TRUE)      # all 136,535 Gencode M17 transcripts
+Coding    <- readDNAStringSet("gencode.vM18.pc_transcripts.fa", format="fasta",use.names=TRUE)   # all 64,732 coding transcripts
 
 # split set to prevent memory exhaust
 Annotation.1  <- Annotation.ID026655[1:20000,]
@@ -51,10 +51,10 @@ pdict.2       <- PDict(probes.2, tb.start = 25, tb.end = 35)
 
 ##### 2.2.1 mapping: incidence matrix with a row for each probe and col for each transcript ####
 ################################################################################################
-pc.inc.matrix.1    <- vcountPDict(pdict.1, Coding, max.mismatch = 3)   
-pc.inc.matrix.2    <- vcountPDict(pdict.2, Coding, max.mismatch = 3)    
+pc.inc.matrix.1    <- vcountPDict(pdict.1, Coding, max.mismatch = 3) # align probeSeqs to coding transcriptome allowing 3 mismatches outside of the trusted band   
+pc.inc.matrix.2    <- vcountPDict(pdict.2, Coding, max.mismatch = 3) # align probeSeqs to coding transcriptome allowing 3 mismatches outside of the trusted band    
 
-##### 2.2.2 extract names of matched coding transcripts from fasta file ########################
+##### 2.2.2 extract Ensembl GeneID of matched coding transcripts from fasta file ###############
 ################################################################################################
 
 #                                                        1                   2                    3                    4                  5         6   7      8          9            10                    
@@ -67,16 +67,17 @@ pc.ensembl_gene_ids     <- bplapply(seq_len(length(pdict.2)), getGeneID.pc, BPPA
 pc.ensembl_gene_ids     <- unlist(pc.ensembl_gene_ids, use.names=FALSE)    
 
 Annotation_pc_Gencode_1 <- data.frame(row.names = row.names(Annotation.1),pc.ensembl_gene_ids = pc.ensembl_gene_ids)
-rm(pc.inc.matrix.1) 
+rm(pc.inc.matrix.1)  ### delete pc.inc.matrix.1 (4.7 Gb large)
 rm(ensembl_gene_ids) ### repeat with pc.inc.matrix.2
 
 Annotation_pc_Gencode_2 <- data.frame(row.names = row.names(Annotation.2),pc.ensembl_gene_ids = pc.ensembl_gene_ids)
 rm(pc.inc.matrix.2)
 
+### Assemble & export Annotation for the coding genes:
 Annotation_pc_Gencode   <- rbind(Annotation_pc_Gencode_1,Annotation_pc_Gencode_2)
 write.table(Annotation_pc_Gencode, file = "Annotation_pc_Gencode.vM18.txt", sep="\t",col.names=NA)
 
-table(is.na(Annotation_pc_Gencode$pc.ensembl_gene_ids))  # 28481 coding genes annotated de novo with 3 mismatches
+table(is.na(Annotation_pc_Gencode$pc.ensembl_gene_ids))  # 28,481 coding genes annotated de novo with 3 mismatches
 rm(Annotation_pc_Gencode_2)
 rm(Annotation_pc_Gencode_1)
 
@@ -114,7 +115,7 @@ rm(inc.matrix.2)
 Annotation_Gencode   <- rbind(Annotation_Gencode_1,Annotation_Gencode_2)
 write.table(Annotation_Gencode, file = "Annotation_Gencode.vM18.txt", sep="\t",col.names=NA)
 
-table(is.na(Annotation_Gencode$ensembl_gene_ids))  # 33361 genes annotated de novo using all Gencode.M18 transcripts
+table(is.na(Annotation_Gencode$ensembl_gene_ids))  # 33,361 genes annotated de novo using all Gencode.M18 transcripts
 rm(Annotation_Gencode_1)
 rm(Annotation_Gencode_2)
 rm(Annotation.1)
@@ -124,6 +125,8 @@ rm(Annotation.2)
 ################################################################################################
 #### 3. Final Annotation  ######################################################################
 ################################################################################################
+
+# load the Annotations from the previous steps 
 Annotation_Gencode    <- read.delim("Annotation_Gencode.vM18.txt",header=TRUE,sep="\t",stringsAsFactors =FALSE, row.names = 1, na.strings = "NA")
 Annotation_pc_Gencode <- read.delim("Annotation_pc_Gencode.vM18.txt",header=TRUE,sep="\t",stringsAsFactors =FALSE, row.names = 1, na.strings = "NA")
 
@@ -132,7 +135,7 @@ table(row.names(Annotation_pc_Gencode) == row.names(Annotation.ID026655))
 
 #### 3.1 1st priority: Gencode.M18 coding transcripts ##########################################  
 ################################################################################################
-Annotation_FINAL              <- Annotation_pc_Gencode   # take the 28481 probes de novo mapped to coding genes
+Annotation_FINAL              <- Annotation_pc_Gencode   # take the 28,481 probes de novo mapped to coding genes
 colnames(Annotation_FINAL)    <- c("GeneID_FINAL")
 Annotation_FINAL$Source_FINAL <- ifelse(is.na(Annotation_FINAL$GeneID_FINAL) ,NA,"Gencode.M18_pc") 
 table(is.na(Annotation_FINAL$GeneID_FINAL))
@@ -142,13 +145,12 @@ table(is.na(Annotation_FINAL$GeneID_FINAL))
 index.1 <- which(is.na(Annotation_FINAL$GeneID_FINAL) & !is.na(Annotation_Gencode$ensembl_gene_ids))  # 4880 probes are not in coding transcripts, but have annotation in all Gencode M18 transcripts
 Annotation_FINAL$GeneID_FINAL[index.1]       <- Annotation_Gencode$ensembl_gene_ids[index.1]    
 Annotation_FINAL$Source_FINAL[index.1]       <- "Gencode M18"
-table(is.na(Annotation_FINAL$GeneID_FINAL))  # 33361 probes annotated by de novo mapping against Gencode 
+table(is.na(Annotation_FINAL$GeneID_FINAL))  # 33,361 probes annotated by de novo mapping against Gencode 
 
 ### change ensembl_gene_id.version to ensembl_gene_id only ######################################
 GENE.ID<- NULL                   
 for (i in 1:39428) {GENE.ID[i] <- unlist(strsplit(Annotation_FINAL$GeneID_FINAL[i], ".", fixed = TRUE))[1] }        
 Annotation_FINAL$GeneID_FINAL <- GENE.ID
-
 
 #### 3.3. Annotate ensembl_gene_ids with BiomaRt ###############################################
 ################################################################################################
@@ -158,7 +160,7 @@ ensembl=useMart(biomart="ensembl", dataset="mmusculus_gene_ensembl")
 BM <- getBM(attributes = c("ensembl_gene_id","external_gene_name","description","gene_biotype"),
                filters = 'ensembl_gene_id', values = Annotation_FINAL$GeneID_FINAL, mart = ensembl) # cave unordered output in the order the results are returned from the Biomart server
 
-BM         <- BM[!duplicated(BM$ensembl_gene_id),]   # retain 24047 unique ensembl_gene_ids 
+BM         <- BM[!duplicated(BM$ensembl_gene_id),]   # retain 24,047 unique ensembl_gene_ids 
 BM[BM==""] <- NA
 
 ### merge Annotations
@@ -183,12 +185,12 @@ colnames(Annotation_FINAL) <- c("GeneID_FINAL","Source_FINAL", "GeneSymbol_FINAL
 
 #### 3.3 3rd priority: Agilent eArray Annotation when Gencode.M18 is NA   ######################
 ################################################################################################
-index.2 <- which(is.na(Annotation_FINAL$GeneSymbol_FINAL) & !is.na(Annotation.ID026655$GeneSymbol))  # 2872 probes
+index.2 <- which(is.na(Annotation_FINAL$GeneSymbol_FINAL) & !is.na(Annotation.ID026655$GeneSymbol))  # 2,872 probes
 Annotation_FINAL$GeneSymbol_FINAL[index.2] <- Annotation.ID026655$GeneSymbol[index.2]              
 Annotation_FINAL$GeneName_FINAL[index.2]   <- Annotation.ID026655$GeneName[index.2]    
 Annotation_FINAL$Source_FINAL[index.2]     <- "Agilent eArray"
 
-table(is.na(Annotation_FINAL$GeneSymbol_FINAL))  # 36226 probes annotated until here
+table(is.na(Annotation_FINAL$GeneSymbol_FINAL))  # 36,226 probes annotated until here
 
 #### 3.4 split Annotation file for step 5 ######################################################
 ################################################################################################
