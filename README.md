@@ -7,15 +7,15 @@ We provide the scripts and R Workspace files to reproduce major analysis steps a
 
 * [Microarray Annotation](./Paper/Microarray%20annotation)
 
-* [Microarray Data Processing](./Paper/FIGURE%202)
+* [Microarray Data Processing](./Paper/Microarray%20Data%20Processing)
 
-* [Feature Selection Development Phase](./Paper/FIGURE%203)
+* [Feature Selection Development Phase](./Paper/Feature%20Selection%20Development%20Phase)
 
-* [Feature Selection Leave One Batch Out](./Paper/FIGURE%204)
+* [Feature Selection Leave One Batch Out](./Paper/Feature%20Selection%20Leave%20One%20Batch%20Out)
 
-* [Feature Selection Final 152 Data Sets](./Paper/FIGURE%205)
+* [Feature Selection Final 152 Data Sets](./Paper/Selection%20Final%20152%20Data%20Sets)
 
-* [SAGA GSEA](./Paper/FIGURE%206)
+* [SAGA GSEA](./Paper/SAGA%20GSEA)
 
 ## [SAGA R package](https://talbotsr.com/saga_package/index.html):
 We provide the SAGA analysis pipeline as a freely available [R-package](https://github.com/mytalbot/saga_package), which is hosted and maintained on [GitHub](https://github.com/) by [Steven R. Talbot](https://github.com/mytalbot).
