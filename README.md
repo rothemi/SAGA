@@ -13,7 +13,7 @@ We provide the scripts and R Workspace files to reproduce major analysis steps a
 
 * [Feature Selection Leave One Batch Out](./Paper/Feature%20Selection%20Leave%20One%20Batch%20Out)
 
-* [Feature Selection Final 152 Data Sets](./Paper/Selection%20Final%20152%20Data%20Sets)
+* [Feature Selection Final 152 Data Sets](./Paper/Feature%20Selection%20Final%20152%20Data%20Sets)
 
 * [SAGA GSEA](./Paper/SAGA%20GSEA)
 
