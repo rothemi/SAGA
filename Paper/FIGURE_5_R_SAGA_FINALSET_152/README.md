@@ -11,4 +11,4 @@ The data set was subjected to unsupervised filtering (genefilter), yielding 1243
 ## Availability of R script and workspace file
 
 *	[FIGURE_5_R_SAGA_FINALSET_152.RData](https://www.dropbox.com/s/k1gj33layaufthg/.RData?dl=0)
-*	[Feature_Selection_FinalSet_152.RData](./Feature_Selection_FinalSet_152.RData)
+*	[20200826_FeatureSelection_rfe_GA40_FinalSet_152.R](./20200826_FeatureSelection_rfe_GA40_FinalSet_152.R)
