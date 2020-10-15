@@ -5,4 +5,4 @@ During the leave-one-batch-out procedure, the optimal predictors found by SVM-RF
 ## Availability of R script and workspace file
 
 *	[FIGURE_6_R_SAGA_GSEA_LeaveOneBatchOut.RData](https://www.dropbox.com/s/72ykrdzfxghofuf/.RData?dl=0)
-*	[R_FeatureSelection and GSEA_LeaveOneBatchOut_154.R](./R_FeatureSelection and GSEA_LeaveOneBatchOut_154.R)
+*	[R_FeatureSelection and GSEA_LeaveOneBatchOut_154.R](./R_FeatureSelection%20and%20GSEA_LeaveOneBatchOut_154.R)
