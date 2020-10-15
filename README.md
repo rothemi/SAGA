@@ -3,7 +3,7 @@
 In our manuscript **Predicting genotoxicity of integrating viral vectors for stem cell gene therapy using gene expression-based machine learning**, we report an improved *in vitro* test to determine the risk of insertional mutagenesis of integrating vectors for gene therapy. SAGA builds on the well accepted cell culture protocol of the **_I_**_n_ **_V_**_itro_ **IM**mortalization (**IVIM**) assay but screens for the deregulation of oncogenic gene expression signatures. We demonstrate a new bioinformatic approach to correctly classify the mutagenic potential of retroviral vectors used in previous and current clinical trials.
 
 ## Figures in the  [Paper](./Paper/README.md):
-We provide the scripts and R Workspace files to reproduce major analysis steps and Figures described in Schwarzer et al., 2020.
+We provide the R scripts and workspace files to reproduce major analysis steps and figures described in Schwarzer et al., 2020.
 
 * [FIGURE_0_R_SAGA_Annotation_FINAL](./Paper/FIGURE_0_R_SAGA_Annotation_FINAL)
 
@@ -20,7 +20,7 @@ We provide the scripts and R Workspace files to reproduce major analysis steps a
 * [FIGURE_6_R_SAGA_GSEA_Top11GA_FINAL](./Paper/FIGURE_6_R_SAGA_GSEA_Top11GA_FINAL)
 
 ## Rebuttal
-We provide two scripts and Supplementary Data table 1 of the current rebuttal phase of the manuscript
+We provide two scripts and supplementary data table 1 of the current rebuttal phase of the manuscript
 
 * [Rebuttal](./Paper/Rebuttal)
 
